@@ -6,8 +6,6 @@
 #include <cstddef>
 #include <stdexcept>
 
-#define SOMETHING 0.01f
-
 template <size_t N>
 class Grid {
 public:
@@ -16,6 +14,18 @@ public:
 
     void setSpeed(float something) {
         courantSq_ = something;
+    }
+
+    void setDampenening(float damp) {
+        dampening = damp;
+    }
+
+    float getDampening() const {
+        return dampening;
+    }
+
+    float getSpeed() const {
+        return courantSq_;
     }
 
     void perturb(int x, int y, float something) {
@@ -51,11 +61,10 @@ public:
         curr[0] = 0;
         curr[N + 1] = 0;
 
-        const float something = 1.0f;  // TOOD: Change this
         for (size_t i = 1; i < N + 1; i++) {
             float f = -next[i] + 2.0f*curr[i] +
                       courantSq_*(curr[i + 1] - 2.0f*curr[i] + curr[i - 1]);
-            f = f - (f / pow(2.0, something));
+            f = f - (f / pow(2.0, dampening));
             f = std::max<float>(-1.0f, std::min<float>(1.0f, f));
             next[i] = f;
         }
@@ -73,7 +82,8 @@ private:
     size_t whichGrid_ = 0;
     float grid[2][N + 2]{0.0f};
     float curr_grid[N+2]{0.0f};
-    float courantSq_ = SOMETHING;
+    float courantSq_ = 0.16f;
+    float dampening = 6.0f;
 };
 
 #endif // GRID_HPP

@@ -32,6 +32,8 @@ MainWindow::MainWindow(QWidget *parent)
     button->setText("Perturb");
     button->move(200, 420);  // adjust the position as needed
 
+
+
     // Create QLabel and QLineEdit for X
     QLabel *xLabel = new QLabel(this);
     xLabel->setText("X:");
@@ -51,23 +53,51 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Create a slider for the Courant number
     QSlider *slider = new QSlider(Qt::Horizontal, this);
-    slider->setRange(-100, 500);
+    slider->setRange(0, 1000);
     slider->setValue(50); // Assuming the initial Courant number is 50%
     slider->setGeometry(300, 420, 100, 20);  // adjust the position and size as needed
 
     // Create a label for the Courant number
     QLabel *sliderLabel = new QLabel(this);
-    sliderLabel->setText("Courant Number:");
+    sliderLabel->setText("Courant Val:");
     sliderLabel->move(400, 420); // adjust the position as needed
 
+    // Create a slider for the dampening factor
+    QSlider *dampeningSlider = new QSlider(Qt::Horizontal, this);
+    dampeningSlider->setRange(0, 1000); // Dampening factor can range from 0 to 100
+    dampeningSlider->setValue(50); // Set the initial dampening factor to 50
+    dampeningSlider->setGeometry(300, 450, 100, 20); // adjust the position and size as needed
+
+    // Create a label for the dampening factor
+    QLabel *dampeningLabel = new QLabel(this);
+    dampeningLabel->setText("Dampening: ");
+    dampeningLabel->move(400, 450); // adjust the position as needed
+
+
     // Connect the slider valueChanged signal to a slot to handle changing the Courant number
-    connect(slider, &QSlider::valueChanged, [this, slider]() {
-        float courantNum = slider->value() / 100.0f;
+    connect(slider, &QSlider::valueChanged, [this, slider, sliderLabel]() {
+        float courantNum = slider->value() / 1000.0f;
         // TODO: Use courantNum here.
         courantNum = mapf(courantNum, 0.0f, 1.0f, 0.0f, 2.0f);
         grid.setSpeed(courantNum);
-        printf("setting courant to %f\n", courantNum);
+        //printf("setting courant to %f\n", courantNum);
+        sliderLabel->setText("Val: " + QString::number(courantNum, 'f', 2));
     });
+
+    // Connect the slider valueChanged signal to a slot to handle changing the dampening factor
+    connect(dampeningSlider, &QSlider::valueChanged, [this, dampeningSlider, dampeningLabel]() {
+        float dampeningFactor = dampeningSlider->value() / 1000.0f;  // Convert slider value to dampening factor in range 0.0 to 1.0
+        // TODO: Use dampeningFactor here. Depending on your application, you may need to store this value or use it immediately.
+        dampeningFactor = mapf(dampeningFactor, 0.0f, 1.0f, 0.0f, 16.0f);
+        //printf("setting dampening factor to %f\n", dampeningFactor);
+        dampeningLabel->setText("Dampening: " + QString::number(dampeningFactor, 'f', 2));
+        grid.setDampenening(dampeningFactor);
+    });
+
+    // Set initial value for dampeningLabel
+    float initialDampeningFactor = dampeningSlider->value() / 100.0f;
+    dampeningLabel->setText("Dampening: " + QString::number(initialDampeningFactor, 'f', 2));
+
 
     // Connect the clicked() signal from the button to the MainWindow's perturb() slot.
     connect(button, &QPushButton::clicked, this, &MainWindow::perturb);
