@@ -4,28 +4,24 @@ This is an implementation of a 1 dimensional differential wave. There is a QT ap
 
 ![out_alt_alt](https://github.com/zackees/qtwave/assets/6856673/7c44c43e-080f-4d4d-8740-01d183ff346c)
 
-The algorithm is seperate from the main UI app and can be copied and pasted into your own app. Note that it's called `grid` because in the future we want to make this a 2D simulation. The algorithm source is here:
+The algorithm is seperate from the main UI app and can be copied and pasted into your own app.
 
 https://hplgit.github.io/num-methods-for-PDEs/doc/pub/wave/sphinx/._main_wave001.html#formulating-a-recursive-algorithm
 
 ```C++
-#ifndef GRID_HPP
-#define GRID_HPP
+#ifndef WAVE_SIMULATION_H
+#define WAVE_SIMULATION_H
 
 #include <stdio.h>
 #include <cmath>
 #include <cstddef>
 
-// Note that this is a 1-dimensional wave, but the api here is a 2D grid. This is because
-// we intend to upgrade this to a 2D wave simulation.
-// Note that all values are computed in the range of [-1.0f, 1.0f].
-// Call `update()` for each iteration that you want the simulation to progress to. For good
-// results set the speed down but increase the number of updates per frame drawn.
+// One dimensional wave simulation.
 template <size_t N>
-class Grid {
+class WaveSimulation1D {
 public:
-    Grid() = default;
-    ~Grid() = default;
+    WaveSimulation1D() = default;
+    ~WaveSimulation1D() = default;
 
     void setSpeed(float something) {
         courantSq_ = something;
@@ -43,8 +39,8 @@ public:
         return courantSq_;
     }
 
-    float get(size_t x, size_t y) const {
-        if (x >= N || y >= 1) {
+    float get(size_t x) const {
+        if (x >= N) {
             printf("Out of range.\n");
             return 0.0f;
         }
@@ -52,19 +48,21 @@ public:
         return grid[whichGrid_][x+1];
     }
 
+    bool has(size_t x) const {
+        return x < N;
+    }
+
     // value => {-1,1}
-    void set(int x, int y, float value) {
+    void set(int x, float value) {
         if (x >= N) {
             printf("warning X value too high\n");
+            return;
         }
         if (x < 0) {
             printf("warning X value is negative");
-        }
-        if (y != 0) {
-            printf("Warning y value is not == 0\n");
+            return;
         }
         x = std::max<int>(0, std::min<int>(x, N-1));
-        y = 0;
         float *curr = grid[whichGrid_];
         curr[x+1] = value;
     }
@@ -76,8 +74,8 @@ public:
         curr[0] = curr[1];
         curr[N + 1] = curr[N];
         // // Ensure the boundaries are zero:
-        curr[0] = 0;
-        curr[N + 1] = 0;
+        //curr[0] = 0;
+        //curr[N + 1] = 0;
         const float dampening_factor = pow(2.0, dampening);
         for (size_t i = 1; i < N + 1; i++) {
             float f = -next[i] + 2.0f*curr[i] +
@@ -97,5 +95,87 @@ private:
     float dampening = 6.0f;
 };
 
-#endif // GRID_HPP
+
+// Two dimensional wave simulation.
+template <size_t W, size_t H>
+class WaveSimulation2D {
+public:
+    WaveSimulation2D() = default;
+    ~WaveSimulation2D() = default;
+
+    void setSpeed(float something) {
+        courantSq_ = something;
+    }
+
+    void setDampenening(float damp) {
+        dampening = damp;
+    }
+
+    float getDampening() const {
+        return dampening;
+    }
+
+    float getSpeed() const {
+        return courantSq_;
+    }
+
+    float get(size_t x, size_t y) const {
+        if (x >= W || y >= H) {
+            printf("Out of range.\n");
+            return 0.0f;
+        }
+        return grid[whichGrid_][y+1][x+1];
+    }
+
+    bool has(size_t x, size_t y) const {
+        if (x >= W || y >= H) {
+            return false;
+        }
+        return true;
+    }
+
+    void set(size_t x, size_t y, float value) {
+        if (x >= W || y >= H) {
+            printf("Out of range.\n");
+            return;
+        }
+        grid[whichGrid_][y+1][x+1] = value;
+    }
+
+    void update() {
+        float (*curr)[W+2] = grid[whichGrid_];
+        float (*next)[W+2] = grid[whichGrid_ ^= 1];  // also toggles whichGrid.
+
+        for (size_t i = 0; i < H+2; i++) {
+            curr[i][0] = curr[i][1];
+            curr[i][W + 1] = curr[i][W];
+        }
+        for (size_t i = 0; i < W+2; i++) {
+            curr[0][i] = curr[1][i];
+            curr[H + 1][i] = curr[H][i];
+        }
+
+        const float dampening_factor = pow(2.0, dampening);
+        for (size_t j = 1; j < H; j++) {
+            for (size_t i = 1; i < W; i++) {
+                float f = -next[j][i] + 2.0f*curr[j][i] +
+                          courantSq_*(curr[j][i + 1] + curr[j][i - 1] + curr[j + 1][i] + curr[j - 1][i] - 4.0f*curr[j][i]);
+                f = f - (f / dampening_factor);
+                f = std::max<float>(-1.0f, std::min<float>(1.0f, f));
+                next[j][i] = f;
+            }
+        }
+    }
+
+
+private:
+    size_t whichGrid_ = 0;
+    float grid[2][H+2][W+2] = {{{0.0f}}};  // Two extra for the boundary condition.
+    float courantSq_ = 0.16f;
+    float dampening = 6.0f;
+};
+
+
+#endif // WAVE_SIMULATION_H
+
 ```
