@@ -2,7 +2,11 @@
 
 This is an implementation of a 1 and 2 dimensional differential wave. There is a QT app that allows you to run the wave simulation with different values.
 
+**1 Dimension**
+
 ![out_alt_alt](https://github.com/zackees/qtwave/assets/6856673/7c44c43e-080f-4d4d-8740-01d183ff346c)
+
+**2 Dimensions**
 
 The algorithm is seperate from the main UI app and can be copied and pasted into your own app.
 
