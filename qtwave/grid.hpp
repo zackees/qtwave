@@ -20,8 +20,17 @@ public:
 
     void perturb(int x, int y, float something) {
         //float *curr = mesh[whichGrid_];  // "mesh" doesn't exist, we assume grid is meant
-        assert(x < N);
-        assert(y == 0);
+        //assert(x < N);
+        if (x >= N) {
+            printf("warning X value too high\n");
+        }
+        if (y != 0) {
+            printf("Warning y value is not == 0\n");
+        }
+        x = std::min<int>(x, N-1);
+        y = 0;
+
+        //assert(y == 0);
         float *curr = grid[whichGrid_];
         curr[x * (1+y)] = something;
     }

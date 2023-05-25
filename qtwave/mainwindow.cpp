@@ -3,8 +3,22 @@
 #include <QPainter>
 #include <QPushButton>
 #include <QLabel>
+#include <QSlider>
 
 #define FRAME_RATE 60
+
+float mapf(float input, float minx, float maxx, float outmin, float outmax) {
+    // Clamp the input value within the specified range
+    input = std::max(minx, std::min(maxx, input));
+
+    // Calculate the normalized position of the input within the range
+    float normalized = (input - minx) / (maxx - minx);
+
+    // Map the normalized value to the output range
+    float output = outmin + normalized * (outmax - outmin);
+
+    return output;
+}
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -35,6 +49,26 @@ MainWindow::MainWindow(QWidget *parent)
     yLineEdit->setText("0");
     yLineEdit->setReadOnly(true);
 
+    // Create a slider for the Courant number
+    QSlider *slider = new QSlider(Qt::Horizontal, this);
+    slider->setRange(-100, 500);
+    slider->setValue(50); // Assuming the initial Courant number is 50%
+    slider->setGeometry(300, 420, 100, 20);  // adjust the position and size as needed
+
+    // Create a label for the Courant number
+    QLabel *sliderLabel = new QLabel(this);
+    sliderLabel->setText("Courant Number:");
+    sliderLabel->move(400, 420); // adjust the position as needed
+
+    // Connect the slider valueChanged signal to a slot to handle changing the Courant number
+    connect(slider, &QSlider::valueChanged, [this, slider]() {
+        float courantNum = slider->value() / 100.0f;
+        // TODO: Use courantNum here.
+        courantNum = mapf(courantNum, 0.0f, 1.0f, -1.0f, 5.0f);
+        grid.setSpeed(courantNum);
+        printf("setting courant to %f\n", courantNum);
+    });
+
     // Connect the clicked() signal from the button to the MainWindow's perturb() slot.
     connect(button, &QPushButton::clicked, this, &MainWindow::perturb);
 
@@ -44,7 +78,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Connect the timeout() signal from the timer to the MainWindow's update() slot.
     connect(timer, SIGNAL(timeout()), this, SLOT(update()));
 
-    // Start the timer to emit timeout() signal every 100 milliseconds (.1 second).
+    // Start the timer to emit timeout() signal every 1000/FRAME_RATE milliseconds.
     timer->start(int(1000.0f/FRAME_RATE));
 }
 

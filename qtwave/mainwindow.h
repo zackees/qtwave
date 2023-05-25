@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QTimer>
+#include <QSlider>
 #include <QLineEdit>
 
 #include "grid.hpp"
@@ -24,13 +25,14 @@ protected:
 
 public slots:
     void update(); // This function will be called regularly by the QTimer.
-    void perturb(); // This function will be called when the button is pressed.
+    void perturb(); // Slot to handle perturb button click.
 
 private:
     Ui::MainWindow *ui;
     Grid<120> grid;
     QTimer *timer; // Timer to trigger updates.
-    QLineEdit *xLineEdit;
-    QLineEdit *yLineEdit;
+    QLineEdit *xLineEdit; // QLineEdit for X input.
+    QLineEdit *yLineEdit; // QLineEdit for Y input.
+    QSlider *courantSlider; // Slider for Courant number.
 };
 #endif // MAINWINDOW_H
