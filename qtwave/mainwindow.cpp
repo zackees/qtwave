@@ -3,8 +3,6 @@
 #include <QPainter>
 #include <QPushButton>
 #include <QLabel>
-#include <QLineEdit>
-
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -22,15 +20,18 @@ MainWindow::MainWindow(QWidget *parent)
     QLabel *xLabel = new QLabel(this);
     xLabel->setText("X:");
     xLabel->move(20, 415); // adjust the position as needed
-    QLineEdit *xLineEdit = new QLineEdit(this);
+    xLineEdit = new QLineEdit(this);
     xLineEdit->move(50, 415); // adjust the position as needed
 
     // Create QLabel and QLineEdit for Y
     QLabel *yLabel = new QLabel(this);
     yLabel->setText("Y:");
     yLabel->move(20, 450); // adjust the position as needed
-    QLineEdit *yLineEdit = new QLineEdit(this);
+    yLineEdit = new QLineEdit(this);
     yLineEdit->move(50, 450); // adjust the position as needed
+
+    // Connect the clicked() signal from the button to the MainWindow's perturb() slot.
+    connect(button, &QPushButton::clicked, this, &MainWindow::perturb);
 
     // Initialize the timer.
     timer = new QTimer(this);
@@ -39,7 +40,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(timer, SIGNAL(timeout()), this, SLOT(update()));
 
     // Start the timer to emit timeout() signal every 1000 milliseconds (1 second).
-    // You can adjust this interval to whatever suits your needs.
     timer->start(1000);
 }
 
@@ -77,12 +77,22 @@ void MainWindow::paintEvent(QPaintEvent *event)
         }
     }
 }
+
 void MainWindow::update()
 {
     // TODO: Insert your update logic here.
-    printf("Hello world\n");
+    printf("update running\n");
     grid.update();
 
     // Redraw the window.
     QWidget::update();
+}
+
+void MainWindow::perturb()
+{
+    int x = xLineEdit->text().toInt();
+    int y = yLineEdit->text().toInt();
+
+    grid.perturb(x, y, 1.0f);
+    this->update();
 }
