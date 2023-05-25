@@ -63,8 +63,8 @@ public:
         curr[0] = curr[1];
         curr[N + 1] = curr[N];
         // // Ensure the boundaries are zero:
-        curr[0] = 0;
-        curr[N + 1] = 0;
+        //curr[0] = 0;
+        //curr[N + 1] = 0;
         const float dampening_factor = pow(2.0, dampening);
         for (size_t i = 1; i < N + 1; i++) {
             float f = -next[i] + 2.0f*curr[i] +
@@ -132,33 +132,30 @@ public:
     }
 
     void update() {
-        size_t nextGrid = whichGrid_ ^ 1;
+        float (*curr)[W+2] = grid[whichGrid_];
+        float (*next)[W+2] = grid[whichGrid_ ^= 1];  // also toggles whichGrid.
+
+        for (size_t i = 0; i < H+2; i++) {
+            curr[i][0] = curr[i][1];
+            curr[i][W + 1] = curr[i][W];
+        }
+        for (size_t i = 0; i < W+2; i++) {
+            curr[0][i] = curr[1][i];
+            curr[H + 1][i] = curr[H][i];
+        }
+
         const float dampening_factor = pow(2.0, dampening);
-
-        // Copy boundary conditions from current grid to next.
-        for (size_t i = 0; i <= W+1; i++) {
-            grid[nextGrid][i][0] = grid[whichGrid_][i][0];
-            grid[nextGrid][i][H+1] = grid[whichGrid_][i][H+1];
-        }
-
-        for (size_t i = 0; i <= H+1; i++) {
-            grid[nextGrid][0][i] = grid[whichGrid_][0][i];
-            grid[nextGrid][W+1][i] = grid[whichGrid_][W+1][i];
-        }
-
-        for (size_t i = 1; i <= H; i++) {
-            for (size_t j = 1; j <= W; j++) {
-                float f = 2.0f * (1.0f - 2.0f * courantSq_) * grid[whichGrid_][i][j] - grid[nextGrid][i][j] +
-                          courantSq_ * (grid[whichGrid_][i+1][j] + grid[whichGrid_][i-1][j] +
-                                        grid[whichGrid_][i][j+1] + grid[whichGrid_][i][j-1]);
+        for (size_t j = 1; j < H; j++) {
+            for (size_t i = 1; i < W; i++) {
+                float f = -next[j][i] + 2.0f*curr[j][i] +
+                          courantSq_*(curr[j][i + 1] + curr[j][i - 1] + curr[j + 1][i] + curr[j - 1][i] - 4.0f*curr[j][i]);
                 f = f - (f / dampening_factor);
                 f = std::max<float>(-1.0f, std::min<float>(1.0f, f));
-                grid[nextGrid][i][j] = f;
+                next[j][i] = f;
             }
         }
-
-        whichGrid_ = nextGrid;
     }
+
 
 private:
     size_t whichGrid_ = 0;
