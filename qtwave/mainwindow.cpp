@@ -127,7 +127,7 @@ void MainWindow::paintEvent(QPaintEvent *event)
     for(int i = 0; i < numCols; ++i) {
         for(int j = 0; j < numRows; ++j) {
             // Get the grid value, clamp it to [-1, 1] and map it to [0, 255].
-            float gridValue = grid.getGridValue(i, 0);  // 0 for y since we are interested in the x,0 value
+            float gridValue = grid.get(i, 0);  // 0 for y since we are interested in the x,0 value
             gridValue = std::min(std::max(gridValue, -1.0f), 1.0f);
             gridValue = ((gridValue + 1.0f) / 2.0f) * 255.0f;
             // Map the grid value to a brightness value (0-255).
@@ -156,6 +156,6 @@ void MainWindow::perturb()
     int x = xLineEdit->text().toInt();
     int y = yLineEdit->text().toInt();
 
-    grid.perturb(x, y, 1.0f);
+    grid.set(x, y, 1.0f);
     this->update();
 }
