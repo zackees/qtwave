@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
     xLabel->move(20, 415); // adjust the position as needed
     xLineEdit = new QLineEdit(this);
     xLineEdit->move(50, 415); // adjust the position as needed
+    xLineEdit->setText("0");
 
     // Create QLabel and QLineEdit for Y
     QLabel *yLabel = new QLabel(this);
@@ -29,6 +30,8 @@ MainWindow::MainWindow(QWidget *parent)
     yLabel->move(20, 450); // adjust the position as needed
     yLineEdit = new QLineEdit(this);
     yLineEdit->move(50, 450); // adjust the position as needed
+    yLineEdit->setText("0");
+    yLineEdit->setReadOnly(true);
 
     // Connect the clicked() signal from the button to the MainWindow's perturb() slot.
     connect(button, &QPushButton::clicked, this, &MainWindow::perturb);
@@ -39,8 +42,8 @@ MainWindow::MainWindow(QWidget *parent)
     // Connect the timeout() signal from the timer to the MainWindow's update() slot.
     connect(timer, SIGNAL(timeout()), this, SLOT(update()));
 
-    // Start the timer to emit timeout() signal every 1000 milliseconds (1 second).
-    timer->start(1000);
+    // Start the timer to emit timeout() signal every 100 milliseconds (.1 second).
+    timer->start(100);
 }
 
 MainWindow::~MainWindow()
@@ -62,7 +65,7 @@ void MainWindow::paintEvent(QPaintEvent *event)
     for(int i = 0; i < numCols; ++i) {
         for(int j = 0; j < numRows; ++j) {
             // Get the grid value, clamp it to [-1, 1] and map it to [0, 1].
-            float gridValue = grid.getGridValue(i, 1);  // 1 for y since we are interested in the x,1 value
+            float gridValue = grid.getGridValue(i, 0);  // 1 for y since we are interested in the x,1 value
             gridValue = std::min(std::max(gridValue, -1.0f), 1.0f);
             gridValue = (gridValue + 1.0f) / 2.0f;
 
@@ -81,7 +84,7 @@ void MainWindow::paintEvent(QPaintEvent *event)
 void MainWindow::update()
 {
     // TODO: Insert your update logic here.
-    printf("update running\n");
+    //printf("update running\n");
     grid.update();
 
     // Redraw the window.
