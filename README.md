@@ -10,10 +10,12 @@ The algorithm is seperate from the main UI app and can be copied and pasted into
 #ifndef GRID_HPP
 #define GRID_HPP
 
-#include <algorithm>
+#include <stdio.h>
 #include <cmath>
 #include <cstddef>
 
+// Note that this is a 1-dimensional wave, but the api here is a 2D grid. This is because
+// we intend to upgrade this to a 2D wave simulation.
 template <size_t N>
 class Grid {
 public:
@@ -36,8 +38,17 @@ public:
         return courantSq_;
     }
 
+    float get(size_t x, size_t y) const {
+        if (x >= N || y >= 1) {
+            printf("Out of range.\n");
+            return 0.0f;
+        }
+        //return grid[y][x];
+        return grid[whichGrid_][x+1];
+    }
+
     // value => {-1,1}
-    void perturb(int x, int y, float value) {
+    void set(int x, int y, float value) {
         if (x >= N) {
             printf("warning X value too high\n");
         }
@@ -72,13 +83,6 @@ public:
         }
     }
 
-    float getGridValue(size_t x, size_t y) const {
-        if (x >= N || y >= 1) {
-            throw std::out_of_range("Grid indices out of range");
-        }
-        //return grid[y][x];
-        return grid[whichGrid_][x+1];
-    }
 
 private:
     size_t whichGrid_ = 0;
