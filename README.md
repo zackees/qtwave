@@ -10,10 +10,9 @@ The algorithm is seperate from the main UI app and can be copied and pasted into
 #ifndef GRID_HPP
 #define GRID_HPP
 
-#include <assert.h>
+#include <algorithm>
 #include <cmath>
 #include <cstddef>
-#include <stdexcept>
 
 template <size_t N>
 class Grid {
