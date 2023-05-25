@@ -64,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(slider, &QSlider::valueChanged, [this, slider]() {
         float courantNum = slider->value() / 100.0f;
         // TODO: Use courantNum here.
-        courantNum = mapf(courantNum, 0.0f, 1.0f, -1.0f, 5.0f);
+        courantNum = mapf(courantNum, 0.0f, 1.0f, 0.0f, 2.0f);
         grid.setSpeed(courantNum);
         printf("setting courant to %f\n", courantNum);
     });
@@ -107,6 +107,7 @@ void MainWindow::paintEvent(QPaintEvent *event)
 
             // Map the grid value to a brightness value (0-255).
             int value = static_cast<int>(gridValue);
+            value = std::max<int>(0, std::min<int>(255, gridValue));
 
             // Always use white hue (0) and saturation (0). The brightness is determined by the grid value.
             painter.fillRect(i * cellSize, j * cellSize, cellSize, cellSize, QColor::fromHsv(0, 0, value));
