@@ -13,6 +13,7 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
+    grid.hpp \
     mainwindow.h
 
 FORMS += \

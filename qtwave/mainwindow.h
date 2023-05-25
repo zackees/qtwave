@@ -2,6 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTimer>
+
+#include "grid.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -18,7 +21,12 @@ public:
 protected:
     void paintEvent(QPaintEvent *event) override;
 
+public slots:
+    void update(); // This function will be called regularly by the QTimer.
+
 private:
     Ui::MainWindow *ui;
+    Grid<120> grid;
+    QTimer *timer; // Timer to trigger updates.
 };
 #endif // MAINWINDOW_H
