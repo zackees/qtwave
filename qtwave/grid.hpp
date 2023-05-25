@@ -21,7 +21,7 @@ public:
     void perturb(int x, int y, float something) {
         //float *curr = mesh[whichGrid_];  // "mesh" doesn't exist, we assume grid is meant
         //assert(x < N);
-        if (x > N) {
+        if (x >= N) {
             printf("warning X value too high\n");
         }
         if (x < 0) {
@@ -30,7 +30,7 @@ public:
         if (y != 0) {
             printf("Warning y value is not == 0\n");
         }
-        x = std::max<int>(0, std::min<int>(x, N));
+        x = std::max<int>(0, std::min<int>(x, N-11));
         y = 0;
 
         //assert(y == 0);
@@ -59,7 +59,6 @@ public:
             f = std::max<float>(-1.0f, std::min<float>(1.0f, f));
             next[i] = f;
         }
-        //whichGrid_ ^= 1;
     }
 
     float getGridValue(size_t x, size_t y) const {
