@@ -4,7 +4,9 @@ This is an implementation of a 1 dimensional differential wave. There is a QT ap
 
 ![out_alt_alt](https://github.com/zackees/qtwave/assets/6856673/7c44c43e-080f-4d4d-8740-01d183ff346c)
 
-The algorithm is seperate from the main UI app and can be copied and pasted into your own app. Note that it's called `grid` because in the future we want to make this a 2D simulation.
+The algorithm is seperate from the main UI app and can be copied and pasted into your own app. Note that it's called `grid` because in the future we want to make this a 2D simulation. The algorithm source is here:
+
+https://hplgit.github.io/num-methods-for-PDEs/doc/pub/wave/sphinx/._main_wave001.html#formulating-a-recursive-algorithm
 
 ```C++
 #ifndef GRID_HPP
