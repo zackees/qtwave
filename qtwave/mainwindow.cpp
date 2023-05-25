@@ -5,7 +5,7 @@
 #include <QLabel>
 #include <QSlider>
 
-#define FRAME_RATE 60
+#define FRAME_RATE 120
 
 float mapf(float input, float minx, float maxx, float outmin, float outmax) {
     // Clamp the input value within the specified range
@@ -31,8 +31,6 @@ MainWindow::MainWindow(QWidget *parent)
     QPushButton *button = new QPushButton(this);
     button->setText("Perturb");
     button->move(200, 420);  // adjust the position as needed
-
-
 
     // Create QLabel and QLineEdit for X
     QLabel *xLabel = new QLabel(this);
@@ -73,7 +71,6 @@ MainWindow::MainWindow(QWidget *parent)
     dampeningLabel->setText("Dampening: ");
     dampeningLabel->move(400, 450); // adjust the position as needed
 
-
     // Connect the slider valueChanged signal to a slot to handle changing the Courant number
     connect(slider, &QSlider::valueChanged, [this, slider, sliderLabel]() {
         float courantNum = slider->value() / 1000.0f;
@@ -97,7 +94,6 @@ MainWindow::MainWindow(QWidget *parent)
     // Set initial value for dampeningLabel
     float initialDampeningFactor = dampeningSlider->value() / 100.0f;
     dampeningLabel->setText("Dampening: " + QString::number(initialDampeningFactor, 'f', 2));
-
 
     // Connect the clicked() signal from the button to the MainWindow's perturb() slot.
     connect(button, &QPushButton::clicked, this, &MainWindow::perturb);
@@ -134,14 +130,10 @@ void MainWindow::paintEvent(QPaintEvent *event)
             float gridValue = grid.getGridValue(i, 0);  // 0 for y since we are interested in the x,0 value
             gridValue = std::min(std::max(gridValue, -1.0f), 1.0f);
             gridValue = ((gridValue + 1.0f) / 2.0f) * 255.0f;
-
             // Map the grid value to a brightness value (0-255).
-            int value = static_cast<int>(gridValue);
-            value = std::max<int>(0, std::min<int>(255, gridValue));
-
+            int value = std::max<int>(0, std::min<int>(255, gridValue));
             // Always use white hue (0) and saturation (0). The brightness is determined by the grid value.
             painter.fillRect(i * cellSize, j * cellSize, cellSize, cellSize, QColor::fromHsv(0, 0, value));
-
             // Draw white border
             painter.setPen(QPen(Qt::white));
             painter.drawRect(i * cellSize, j * cellSize, cellSize, cellSize);
