@@ -24,10 +24,13 @@ public:
         if (x >= N) {
             printf("warning X value too high\n");
         }
+        if (x < 0) {
+            printf("warning X value is negative");
+        }
         if (y != 0) {
             printf("Warning y value is not == 0\n");
         }
-        x = std::min<int>(x, N-1);
+        x = std::max<int>(0, std::min<int>(x, N-1));
         y = 0;
 
         //assert(y == 0);
