@@ -30,7 +30,7 @@ public:
         if (y != 0) {
             printf("Warning y value is not == 0\n");
         }
-        x = std::max<int>(0, std::min<int>(x, N-11));
+        x = std::max<int>(0, std::min<int>(x, N-1));
         y = 0;
 
         //assert(y == 0);
@@ -72,7 +72,7 @@ public:
 private:
     size_t whichGrid_ = 0;
     float grid[2][N + 2]{0.0f};
-    float curr_grid[N+2]{0.0f}
+    float curr_grid[N+2]{0.0f};
     float courantSq_ = SOMETHING;
 };
 
