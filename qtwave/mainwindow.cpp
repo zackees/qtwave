@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
     xLabel->move(20, 415); // adjust the position as needed
     xLineEdit = new QLineEdit(this);
     xLineEdit->move(50, 415); // adjust the position as needed
-    xLineEdit->setText("0");
+    xLineEdit->setText("50");
 
     // Create QLabel and QLineEdit for Y
     QLabel *yLabel = new QLabel(this);
