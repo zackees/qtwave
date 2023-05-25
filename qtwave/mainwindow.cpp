@@ -4,6 +4,8 @@
 #include <QPushButton>
 #include <QLabel>
 
+#define FRAME_RATE 60
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -43,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(timer, SIGNAL(timeout()), this, SLOT(update()));
 
     // Start the timer to emit timeout() signal every 100 milliseconds (.1 second).
-    timer->start(100);
+    timer->start(int(1000.0f/FRAME_RATE));
 }
 
 MainWindow::~MainWindow()
@@ -64,15 +66,16 @@ void MainWindow::paintEvent(QPaintEvent *event)
 
     for(int i = 0; i < numCols; ++i) {
         for(int j = 0; j < numRows; ++j) {
-            // Get the grid value, clamp it to [-1, 1] and map it to [0, 1].
-            float gridValue = grid.getGridValue(i, 0);  // 1 for y since we are interested in the x,1 value
+            // Get the grid value, clamp it to [-1, 1] and map it to [0, 255].
+            float gridValue = grid.getGridValue(i, 0);  // 0 for y since we are interested in the x,0 value
             gridValue = std::min(std::max(gridValue, -1.0f), 1.0f);
-            gridValue = (gridValue + 1.0f) / 2.0f;
+            gridValue = ((gridValue + 1.0f) / 2.0f) * 255.0f;
 
-            // Map the [0, 1] grid value to a hue value (0-359).
-            int hue = static_cast<int>(gridValue * 359);
+            // Map the grid value to a brightness value (0-255).
+            int value = static_cast<int>(gridValue);
 
-            painter.fillRect(i * cellSize, j * cellSize, cellSize, cellSize, QColor::fromHsv(hue, 255, 255));
+            // Always use white hue (0) and saturation (0). The brightness is determined by the grid value.
+            painter.fillRect(i * cellSize, j * cellSize, cellSize, cellSize, QColor::fromHsv(0, 0, value));
 
             // Draw white border
             painter.setPen(QPen(Qt::white));
