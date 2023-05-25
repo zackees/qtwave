@@ -16,6 +16,9 @@ The algorithm is seperate from the main UI app and can be copied and pasted into
 
 // Note that this is a 1-dimensional wave, but the api here is a 2D grid. This is because
 // we intend to upgrade this to a 2D wave simulation.
+// Note that all values are computed in the range of [-1.0f, 1.0f].
+// Call `update()` for each iteration that you want the simulation to progress to. For good
+// results set the speed down but increase the number of updates per frame drawn.
 template <size_t N>
 class Grid {
 public:
