@@ -6,7 +6,7 @@
 #include <QSlider>
 #include <QLineEdit>
 
-#include "grid.hpp"
+#include "wave_simulation.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -29,7 +29,7 @@ public slots:
 
 private:
     Ui::MainWindow *ui;
-    Grid<120> grid;
+    WaveSimulation2D<120, 120> grid;
     QTimer *timer; // Timer to trigger updates.
     QLineEdit *xLineEdit; // QLineEdit for X input.
     QLineEdit *yLineEdit; // QLineEdit for Y input.

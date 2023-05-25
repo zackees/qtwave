@@ -13,8 +13,8 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
-    grid.hpp \
-    mainwindow.h
+    mainwindow.h \
+    wave_simulation.hpp
 
 FORMS += \
     mainwindow.ui

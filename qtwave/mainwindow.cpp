@@ -47,7 +47,6 @@ MainWindow::MainWindow(QWidget *parent)
     yLineEdit = new QLineEdit(this);
     yLineEdit->move(50, 450); // adjust the position as needed
     yLineEdit->setText("0");
-    yLineEdit->setReadOnly(true);
 
     // Create a slider for the Courant number
     QSlider *slider = new QSlider(Qt::Horizontal, this);
@@ -118,16 +117,18 @@ void MainWindow::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
 
-    int numRows = 4;
-    int numCols = 120;
+    int numRows = 80;
+    int numCols = 80;
 
     // Calculate the width and height of each cell (pixel), and make them square.
-    int cellSize = std::min(width() / numCols, height() / numRows);
+    int width = 3*this->width() / 4;
+    int height = 3*this->height() / 4;
+    int cellSize = std::min(width / numCols, height / numRows);
 
     for(int i = 0; i < numCols; ++i) {
         for(int j = 0; j < numRows; ++j) {
             // Get the grid value, clamp it to [-1, 1] and map it to [0, 255].
-            float gridValue = grid.get(i, 0);  // 0 for y since we are interested in the x,0 value
+            float gridValue = grid.get(i, j);
             gridValue = std::min(std::max(gridValue, -1.0f), 1.0f);
             gridValue = ((gridValue + 1.0f) / 2.0f) * 255.0f;
             // Map the grid value to a brightness value (0-255).
@@ -156,6 +157,13 @@ void MainWindow::perturb()
     int x = xLineEdit->text().toInt();
     int y = yLineEdit->text().toInt();
 
-    grid.set(x, y, 1.0f);
+    for (int i = x-1; i <= x+1; i++) {
+        for (int j = y-1; j <= y+1; j++) {
+            if (grid.has(i,j)) {
+                grid.set(i, j, 1.0f);
+            }
+        }
+    }
+
     this->update();
 }
