@@ -82,8 +82,8 @@ public:
 
 private:
     size_t whichGrid_ = 0;
-    float grid[2][N + 2]{0.0f};
-    float curr_grid[N+2]{0.0f};
+    float grid[2][N + 2]= {{0.0f}, {0.0f}};  // Two extra for the boundary condition.
+    float curr_grid[N+2] = {0.0f};
     float courantSq_ = 0.16f;
     float dampening = 6.0f;
 };
