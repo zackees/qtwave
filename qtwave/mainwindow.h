@@ -29,7 +29,7 @@ public slots:
 
 private:
     Ui::MainWindow *ui;
-    WaveSimulation2D<120, 120> grid;
+    WaveSimulation2D<80, 80> grid;
     QTimer *timer; // Timer to trigger updates.
     QLineEdit *xLineEdit; // QLineEdit for X input.
     QLineEdit *yLineEdit; // QLineEdit for Y input.
