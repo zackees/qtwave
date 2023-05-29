@@ -2,6 +2,8 @@
 
 This is an implementation of a 1 and 2 dimensional differential wave. There is a QT app that allows you to run the wave simulation with different values.
 
+Download the windows demo [here](https://github.com/zackees/qtwave/raw/main/demo.zip)
+
 **1 Dimension**
 
 ![out_alt_alt](https://github.com/zackees/qtwave/assets/6856673/7c44c43e-080f-4d4d-8740-01d183ff346c)
